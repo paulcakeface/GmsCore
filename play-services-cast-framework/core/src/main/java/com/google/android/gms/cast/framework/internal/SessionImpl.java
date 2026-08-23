@@ -66,6 +66,7 @@ public class SessionImpl extends ISession.Stub {
     public void onApplicationConnectionSuccess(ApplicationMetadata applicationMetadata, String applicationStatus, String sessionId, boolean wasLaunched) {
         this.mIsConnecting = false;
         this.mIsConnected = true;
+        this.sessionId = sessionId;
         this.castContext.getSessionManagerImpl().onSessionStarted(this, sessionId);
         try {
             this.castContext.getRouter().selectRouteById(this.getRouteId());
@@ -174,7 +175,21 @@ public class SessionImpl extends ISession.Stub {
 
     @Override
     public void notifySessionEnded(int error) {
-        Log.d(TAG, "unimplemented Method: notifySessionEnded");
+        CastContextImpl castContext = this.castContext;
+
+        this.mIsConnecting = false;
+        this.mIsConnected = false;
+        castContext.getSessionManagerImpl().onSessionEnded(this, error);
+        try {
+            castContext.getRouter().selectDefaultRoute();
+        } catch (RemoteException ex) {
+            Log.e(TAG, "Error calling selectDefaultRoute: " + ex.getMessage());
+        }
+        this.sessionId = null;
+        this.routeId = null;
+        this.castContext = null;
+        this.castDevice = null;
+        this.routeInfoExtra = null;
     }
 
     @Override

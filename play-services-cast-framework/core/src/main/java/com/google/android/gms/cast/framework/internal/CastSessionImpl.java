@@ -73,7 +73,10 @@ public class CastSessionImpl extends ICastSession.Stub {
     }
 
     @Override
-    public void disconnectFromDevice(boolean boolean1, int int1) {
-        Log.d(TAG, "unimplemented Method: disconnectFromDevice");
+    public void disconnectFromDevice(boolean stopCasting, int reason) throws RemoteException {
+        if (stopCasting && this.session.getSessionId() != null) {
+            this.controller.stopApplication(this.session.getSessionId());
+        }
+        this.controller.closeConnection(reason);
     }
 }

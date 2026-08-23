@@ -64,7 +64,11 @@ public class SessionManagerImpl extends ISessionManager.Stub {
 
     @Override
     public void endCurrentSession(boolean b, boolean stopCasting) throws RemoteException {
-        Log.d(TAG, "unimplemented Method: endCurrentSession");
+        if (this.currentSession == null) return;
+
+        SessionImpl session = this.currentSession;
+        this.onSessionEnding(session);
+        session.getSessionProxy().end(stopCasting);
     }
 
     @Override
