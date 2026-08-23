@@ -75,15 +75,17 @@ public class SessionImpl extends ISession.Stub {
     }
 
     public void onApplicationConnectionFailure(int statusCode) {
+        CastContextImpl castContext = this.castContext;
+
         this.mIsConnecting = false;
         this.mIsConnected = false;
         this.routeId = null;
         this.castContext = null;
         this.castDevice = null;
         this.routeInfoExtra = null;
-        this.castContext.getSessionManagerImpl().onSessionStartFailed(this, statusCode);
+        castContext.getSessionManagerImpl().onSessionStartFailed(this, statusCode);
         try {
-            this.castContext.getRouter().selectDefaultRoute();
+            castContext.getRouter().selectDefaultRoute();
         } catch (RemoteException ex) {
             Log.e(TAG, "Error calling selectDefaultRoute: " + ex.getMessage());
         }
