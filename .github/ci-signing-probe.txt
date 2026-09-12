@@ -1,0 +1,1 @@
+Temporary CI signing-path probe created by ChatGPT on 2026-09-12. No source or device behaviour changes.
